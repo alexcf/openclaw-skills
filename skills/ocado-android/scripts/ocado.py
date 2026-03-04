@@ -7,6 +7,7 @@ Usage:
     python3 ocado.py add "butter" 2  # search + quick-add 2x first match
     python3 ocado.py checkout        # complete checkout if cart has items
     python3 ocado.py status          # show cart total + current screen
+    python3 ocado.py login           # open account/login view
 """
 
 import subprocess, sys, time, json, os
@@ -101,6 +102,58 @@ def open_ocado():
     ok = "ocado" in focus.lower()
     print(f"Ocado: {'open' if ok else 'not open'} ({focus})")
     return ok
+
+def open_ocado_login():
+    """Open Ocado and try to reach the login flow.
+
+    This is a non-interactive helper: it will attempt to bring up the
+    Sign In screen if it appears, otherwise it will capture and print current
+    state for manual login continuation.
+    """
+    if is_locked():
+        try:
+            unlock()
+        except Exception:
+            pass
+
+    if not open_ocado():
+        print("WARN: couldn't verify app focus; continuing anyway")
+
+    d = _get_device()
+
+    # Quick path: account button/nav item to login area
+    for target in ["Account", "Profile", "Sign in", "Sign In", "Menu", "My account", "Home"]:
+        el = d(text=target)
+        if el.exists(timeout=2):
+            el.click()
+            time.sleep(2)
+            break
+    else:
+        # no obvious nav target found
+        pass
+
+    # If a sign-in control is visible, open it and stop.
+    for target in ["Sign in", "Sign In", "Log in", "Log In"]:
+        btn = d(text=target)
+        if btn.exists(timeout=1):
+            btn.click()
+            time.sleep(2)
+            print(f"Opened login target: {target}")
+            path = screenshot()
+            print(f"Screenshot: {path}")
+            return
+
+    # Already signed in indicators
+    if any(d(text=t).exists(timeout=1) for t in ["Sign out", "Orders", "Basket", "Trolley"]):
+        print("Already signed in or login already bypassed by existing session")
+        path = screenshot()
+        print(f"Screenshot: {path}")
+        return
+
+    print("Login controls were not auto-detected; opened Ocado and captured screenshot.")
+    path = screenshot()
+    print(f"Screenshot: {path}")
+    print("Open the app and complete sign-in manually if required.")
 
 def _get_device():
     """Get connected uiautomator2 device."""
@@ -508,6 +561,9 @@ def main():
 
     elif cmd == "status":
         get_status()
+
+    elif cmd == "login":
+        open_ocado_login()
 
     else:
         print(f"Unknown command: {cmd}")

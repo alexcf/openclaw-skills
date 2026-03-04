@@ -9,6 +9,7 @@
 ## Supported commands
 
 - `unlock`: wake + PIN + open Ocado
+- `login`: attempt to open account/sign-in route and capture a state screenshot
 - `search "<query>"`: search product catalog
 - `add "<query>" [quantity] [--prefer <brand>]`: search + add best-matched product
 - `checkout`: navigate trolley and complete checkout flow

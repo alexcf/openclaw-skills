@@ -11,6 +11,7 @@ Usage:
     ocado_skill.py view-basket             # View basket contents
     ocado_skill.py checkout                # Complete checkout
     ocado_skill.py unlock                  # Unlock phone + open Ocado
+    ocado_skill.py login                   # Open account/login flow
     ocado_skill.py status                  # Get current state + screenshot
 
 Device: Android phone authenticated via `OCADO_ANDROID_SERIAL`
@@ -282,6 +283,25 @@ def cmd_status():
                 print(f"  {line}", file=sys.stderr)
 
 
+def cmd_login():
+    """Open Ocado login flow (non-interactive assist)."""
+    print("🔑 Opening login flow...")
+    rc, out, err = run_ocado(["login"], timeout=60)
+
+    if out:
+        print(out)
+    if err:
+        for line in err.splitlines():
+            if line.strip() and not line.startswith("Traceback"):
+                print(f"  {line}", file=sys.stderr)
+
+    if rc != 0 and not out:
+        print(f"❌ Login helper failed (exit {rc})", file=sys.stderr)
+        if err:
+            print(err, file=sys.stderr)
+        sys.exit(1)
+
+
 # ─── MCP Server Info ────────────────────────────────────────────────────────
 
 def cmd_mcp_info():
@@ -341,6 +361,7 @@ def main():
     sub.add_parser("checkout", help="Complete checkout")
     sub.add_parser("unlock", help="Unlock phone and open Ocado")
     sub.add_parser("status", help="Get device status + screenshot")
+    sub.add_parser("login", help="Open account/login flow")
     sub.add_parser("mcp-info", help="Show MCP server info")
 
     args = parser.parse_args()
@@ -350,7 +371,7 @@ def main():
         sys.exit(0)
 
     # Check device connectivity for device-dependent commands
-    device_cmds = {"search", "add", "view-basket", "checkout", "unlock", "status"}
+    device_cmds = {"search", "add", "view-basket", "checkout", "unlock", "status", "login"}
     if args.command in device_cmds:
         if not check_device():
             print("❌ Device not connected. Set OCADO_ANDROID_SERIAL and verify ADB connectivity.", file=sys.stderr)
@@ -373,6 +394,9 @@ def main():
 
     elif args.command == "status":
         cmd_status()
+
+    elif args.command == "login":
+        cmd_login()
 
     elif args.command == "mcp-info":
         cmd_mcp_info()

@@ -11,6 +11,7 @@ Automate Ocado product search/add/checkout on an Android phone via ADB and uiaut
 ```bash
 cd skills/ocado-android
 python3 scripts/ocado.py unlock
+python3 scripts/ocado.py login
 python3 scripts/ocado.py search "butter"
 python3 scripts/ocado.py add "whole milk" 2 --prefer "M&S"
 python3 scripts/ocado.py status
@@ -26,6 +27,7 @@ python3 scripts/ocado.py checkout
 ## Commands
 
 - `unlock`: wake and unlock phone, then open Ocado
+- `login`: open login/account flow (non-interactive assist)
 - `search <query>`: locate search results for a product
 - `add <query> [quantity] [--prefer <brand>]`: add best matching item
 - `checkout`: navigate to trolley and attempt checkout
@@ -34,4 +36,5 @@ python3 scripts/ocado.py checkout
 ## Notes
 
 - `checkout` handles typical upsell and place/amend flows.
+- `login` is intended to route to a visible sign-in screen when available; if detection misses it, the script captures a screenshot so you can complete manually.
 - Snapshot output includes a screenshot path and text summary.

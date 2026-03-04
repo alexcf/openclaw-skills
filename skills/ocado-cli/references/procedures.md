@@ -8,6 +8,7 @@
 ## Commands
 
 - `search`
+- `login`
 - `add`
 - `view-basket`
 - `status`
