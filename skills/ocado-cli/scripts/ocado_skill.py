@@ -2,7 +2,7 @@
 """
 Ocado Skill — CLI wrapper for the Ocado Android automation helper.
 
-Wraps ../android/scripts/ocado.py (ADB + uiautomator2)
+Wraps ../ocado-android/scripts/ocado.py (ADB + uiautomator2)
 and an optional MCP server companion in the host repo.
 
 Usage:

@@ -28,4 +28,4 @@ python3 scripts/ocado_skill.py checkout
 ## Included tools
 
 - `scripts/ocado_skill.py`: CLI orchestrator
-- `../android/scripts/ocado.py`: shared command implementation
+- `../ocado-android/scripts/ocado.py`: shared command implementation

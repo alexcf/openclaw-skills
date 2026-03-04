@@ -43,7 +43,7 @@ def keyevent(code):
 def screenshot(path="/sdcard/screen.png") -> str:
     """Take screenshot, pull to workspace, return local path."""
     adb(f"screencap -p {path}")
-    local = os.path.expanduser("~/clawd/android-screen.png")
+    local = "/tmp/ocado-android-screen.png"
     subprocess.run(["adb", "pull", path, local], capture_output=True, timeout=10)
     return local
 
